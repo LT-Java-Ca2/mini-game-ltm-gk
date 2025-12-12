@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rock Paper Scissors Online</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>RPS BATTLE</h1>
+        <div class="subtitle">:: ROCK PAPER SCISSORS ::</div>
+
+        <div class="status waiting" id="status">Connecting to server...</div>
+
+        <div class="score-board">
+            <div class="score-item">
+                <div class="score-label">[ PLAYER 1 ]</div>
+                <div class="score-value" id="yourScore">0</div>
+            </div>
+            <div class="score-item">
+                <div class="score-label">[ PLAYER 2 ]</div>
+                <div class="score-value" id="oppScore">0</div>
+            </div>
+        </div>
+
+        <div class="choices">
+            <button class="choice-btn" data-label="ROCK" onclick="makeChoice('rock')" id="rockBtn" disabled>
+                <img src="Stone.gif" alt="Rock" class="choice-sprite">
+            </button>
+            <button class="choice-btn" data-label="PAPER" onclick="makeChoice('paper')" id="paperBtn" disabled>
+                <img src="Paper.gif" alt="Paper" class="choice-sprite">
+            </button>
+            <button class="choice-btn" data-label="SCISSORS" onclick="makeChoice('scissors')" id="scissorsBtn" disabled>
+                <img src="Scissor.gif" alt="Scissors" class="choice-sprite">
+            </button>
+        </div>
+
+        <div class="result-panel" id="resultPanel">
+            <div class="result-title" id="resultTitle">Connecting...</div>
+            <div class="result-choices" id="resultChoices"></div>
+            <div class="result-text" id="resultText"></div>
+            <button class="play-again-btn hidden" id="playAgainBtn" onclick="playAgain()">Play Again</button>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
