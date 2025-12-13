@@ -89,3 +89,37 @@ class RPSGameServer:
         
         if len(self.choices) == 2:
             await self.determine_winner()
+    
+    async def determine_winner(self):
+        p1_choice = self.choices[0]
+        p2_choice = self.choices[1]
+        
+        if p1_choice == p2_choice:
+            result = 'tie'
+            winner = None
+        else:
+            wins = {'rock': 'scissors', 'scissors': 'paper', 'paper': 'rock'}
+            if wins[p1_choice] == p2_choice:
+                result = 'win'
+                winner = 0
+                self.scores[0] += 1
+            else:
+                result = 'win'
+                winner = 1
+                self.scores[1] += 1
+                
+        for idx, player in enumerate(self.players):
+            if result == 'tie':
+                player_result = 'tie'
+            elif winner == idx:
+                player_result = 'win'
+            else:
+                player_result = 'lose'
+                
+            await player.send_json({
+                'type': 'result',
+                'result': player_result,
+                'your_choice': self.choices[idx],
+                'opponent_choice': self.choices[1-idx],
+                'scores': self.scores
+            })
