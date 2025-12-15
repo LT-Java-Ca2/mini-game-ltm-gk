@@ -33,3 +33,45 @@ function connect() {
         updateStatus('Disconnected. Refresh to reconnect.', 'error');
     };
 }
+
+function handleMessage(data) {
+    switch(data.type) {
+        case 'connected':
+            playerNum = data.player_num;
+            updateStatus(`Connected as Player ${playerNum}`, 'connected');
+            break;
+
+        case 'waiting':
+            updateStatus(data.message, 'waiting');
+            document.getElementById('resultTitle').textContent = 'Waiting for opponent...';
+            break;
+
+        case 'game_start':
+            updateStatus(data.message, 'connected');
+            break;
+
+        case 'round_start':
+            startRound(data.scores);
+            break;
+
+        case 'choice_made':
+            updateStatus('Waiting for opponent...', 'waiting');
+            disableButtons();
+            break;
+
+        case 'result':
+            showResult(data);
+            break;
+
+        case 'opponent_left':
+            updateStatus(data.message, 'error');
+            disableButtons();
+            document.getElementById('resultTitle').textContent = 'Opponent left. Waiting...';
+            break;
+
+        case 'error':
+            updateStatus(data.message, 'error');
+            document.getElementById('resultTitle').textContent = data.message;
+            break;
+    }
+}
