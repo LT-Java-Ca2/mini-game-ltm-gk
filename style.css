@@ -36,3 +36,45 @@ body::before {
     pointer-events: none;
 }
 
+.container {
+    background: #34495e;
+    border: 8px solid #1a252f;
+    box-shadow: 
+        0 0 0 4px #2c3e50,
+        8px 8px 0 0 #1a252f,
+        8px 8px 0 4px #2c3e50;
+    max-width: 700px;
+    width: 100%;
+    padding: 30px;
+    position: relative;
+    z-index: 1;
+    margin: 20px auto;
+}
+
+/* Decorative corners */
+.container::before,
+.container::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: #e74c3c;
+}
+
+.container::before {
+    top: -4px;
+    left: -4px;
+    box-shadow: 
+        0 0 0 4px #34495e,
+        24px 0 0 0 #e74c3c,
+        24px 0 0 4px #34495e;
+}
+
+.container::after {
+    bottom: -4px;
+    right: -4px;
+    box-shadow: 
+        0 0 0 4px #34495e,
+        -24px 0 0 0 #e74c3c,
+        -24px 0 0 4px #34495e;
+}
