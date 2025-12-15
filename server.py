@@ -123,3 +123,57 @@ class RPSGameServer:
                 'opponent_choice': self.choices[1-idx],
                 'scores': self.scores
             })
+            
+    async def broadcast(self, message):
+        if self.players:
+            await asyncio.gather(
+                *[player.send_json(message) for player in self.players if not player.closed],
+                return_exceptions=True
+            )
+
+async def websocket_handler(request):
+    ws = web.WebSocketResponse()
+    await ws.prepare(request)
+    
+    game_server = request.app['game_server']
+    registered = await game_server.register(ws)
+    
+    if not registered:
+        return ws
+    
+    try:
+        async for msg in ws:
+            if msg.type == aiohttp.WSMsgType.TEXT:
+                data = json.loads(msg.data)
+                
+                if data['type'] == 'choice':
+                    await game_server.handle_choice(ws, data['choice'])
+                elif data['type'] == 'play_again':
+                    if len(game_server.players) == 2:
+                        await game_server.start_round()
+                        
+            elif msg.type == aiohttp.WSMsgType.ERROR:
+                print(f'WebSocket error: {ws.exception()}')
+    finally:
+        await game_server.unregister(ws)
+    
+    return ws
+
+async def serve_file(request, filename, content_type):
+    # CHÚ Ý: Dùng basename để chặn việc truy cập ngược thư mục (vd: ../../password.txt)
+    safe_filename = os.path.basename(filename) 
+    file_path = os.path.join(os.path.dirname(__file__), safe_filename)
+    
+    if not os.path.exists(file_path):
+        return web.Response(text=f"Error: {filename} not found", status=404)
+    
+    # Xử lý file ảnh (binary)
+    if content_type and content_type.startswith('image/'):
+        with open(file_path, 'rb') as f:
+            content = f.read()
+        return web.Response(body=content, content_type=content_type)
+    
+    # Xử lý file text
+    with open(file_path, 'r', encoding='utf-8') as f:
+        content = f.read()
+    return web.Response(text=content, content_type=content_type)
