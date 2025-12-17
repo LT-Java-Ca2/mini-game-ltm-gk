@@ -191,3 +191,39 @@ async def image_handler(request):
     filename = request.match_info['filename']
     content_type, _ = mimetypes.guess_type(filename)
     return await serve_file(request, filename, content_type)
+
+
+async def main():
+    game_server = RPSGameServer()
+    
+    app = web.Application()
+    app['game_server'] = game_server
+    app.router.add_get('/', http_handler)
+    app.router.add_get('/style.css', css_handler)
+    app.router.add_get('/game.js', js_handler)
+    app.router.add_get('/{filename:.*\.(png|gif)}', image_handler)
+    app.router.add_get('/ws', websocket_handler)
+    
+    runner = web.AppRunner(app)
+    await runner.setup()
+    site = web.TCPSite(runner, '0.0.0.0', 8080)
+    await site.start()
+    
+    print("=" * 60)
+    print("🎮 Rock Paper Scissors Server Started!")
+    print("=" * 60)
+    print(f"📱 Local URL: http://localhost:8080")
+    print("=" * 60)
+    print("⚡ To share with friends, run:")
+    print("   ngrok http 8080")
+    print("=" * 60)
+    print("✅ Server running... Press Ctrl+C to stop")
+    print("=" * 60)
+    
+    await asyncio.Future()
+
+if __name__ == "__main__":
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        print("\n👋 Server stopped!")
