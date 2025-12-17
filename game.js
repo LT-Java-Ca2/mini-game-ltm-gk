@@ -75,3 +75,26 @@ function handleMessage(data) {
             break;
     }
 }
+
+function startRound(scores) {
+    updateStatus('Make your choice!', 'connected');
+    choiceMade = false;
+    enableButtons();
+    updateScores(scores);
+    
+    resultPanel.className = 'result-panel';
+    document.getElementById('resultTitle').textContent = 'Choose your weapon!';
+    document.getElementById('resultChoices').textContent = '';
+    document.getElementById('resultText').textContent = '';
+    playAgainBtn.classList.add('hidden');
+}
+
+function makeChoice(choice) {
+    if (ws && ws.readyState === WebSocket.OPEN && !choiceMade) {
+        choiceMade = true;
+        ws.send(JSON.stringify({
+            type: 'choice',
+            choice: choice
+        }));
+    }
+}
