@@ -177,3 +177,17 @@ async def serve_file(request, filename, content_type):
     with open(file_path, 'r', encoding='utf-8') as f:
         content = f.read()
     return web.Response(text=content, content_type=content_type)
+
+async def http_handler(request):
+    return await serve_file(request, 'index.html', 'text/html')
+
+async def css_handler(request):
+    return await serve_file(request, 'style.css', 'text/css')
+
+async def js_handler(request):
+    return await serve_file(request, 'game.js', 'application/javascript')
+
+async def image_handler(request):
+    filename = request.match_info['filename']
+    content_type, _ = mimetypes.guess_type(filename)
+    return await serve_file(request, filename, content_type)
