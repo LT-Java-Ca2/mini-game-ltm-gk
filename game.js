@@ -98,3 +98,36 @@ function makeChoice(choice) {
         }));
     }
 }
+
+function showResult(data) {
+    const choices = {rock: 'Stone.gif', paper: 'Paper.gif', scissors: 'Scissor.gif'};
+    
+    resultPanel.className = 'result-panel ' + data.result;
+    
+    let title = '';
+    if (data.result === 'win') {
+        title = 'YOU WIN!';
+    } else if (data.result === 'lose') {
+        title = 'YOU LOSE';
+    } else {
+        title = 'TIE!';
+    }
+    
+    document.getElementById('resultTitle').textContent = title;
+    // --- PHẦN ĐÃ SỬA ---
+    // 1. Tạo chuỗi HTML chứa thẻ <img>
+    // Bạn có thể thêm class hoặc style width để chỉnh kích thước ảnh cho đẹp
+    const yourImgHTML = `<img src="${choices[data.your_choice]}" alt="${data.your_choice}" style="width: 100px; height: auto;">`;
+    const oppImgHTML = `<img src="${choices[data.opponent_choice]}" alt="${data.opponent_choice}" style="width: 100px; height: auto;">`;
+
+    // 2. Sử dụng innerHTML để trình duyệt hiển thị hình ảnh
+    document.getElementById('resultChoices').innerHTML = 
+        `${yourImgHTML} <span class="mx-3 fw-bold">VS</span> ${oppImgHTML}`;
+    // -------------------
+
+    document.getElementById('resultText').textContent = 
+        `You: ${data.your_choice.toUpperCase()} | Opponent: ${data.opponent_choice.toUpperCase()}`;
+    
+    updateScores(data.scores);
+    playAgainBtn.classList.remove('hidden');
+}
