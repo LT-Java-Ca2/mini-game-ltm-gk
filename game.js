@@ -131,3 +131,37 @@ function showResult(data) {
     updateScores(data.scores);
     playAgainBtn.classList.remove('hidden');
 }
+
+function updateScores(scores) {
+    if (playerNum === 1) {
+        document.getElementById('yourScore').textContent = scores[0];
+        document.getElementById('oppScore').textContent = scores[1];
+    } else {
+        document.getElementById('yourScore').textContent = scores[1];
+        document.getElementById('oppScore').textContent = scores[0];
+    }
+}
+
+function playAgain() {
+    if (ws && ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify({type: 'play_again'}));
+        playAgainBtn.classList.add('hidden');
+    }
+}
+
+function enableButtons() {
+    document.getElementById('rockBtn').disabled = false;
+    document.getElementById('paperBtn').disabled = false;
+    document.getElementById('scissorsBtn').disabled = false;
+}
+
+function disableButtons() {
+    document.getElementById('rockBtn').disabled = true;
+    document.getElementById('paperBtn').disabled = true;
+    document.getElementById('scissorsBtn').disabled = true;
+}
+
+function updateStatus(message, type) {
+    status.textContent = message;
+    status.className = 'status ' + type;
+}
